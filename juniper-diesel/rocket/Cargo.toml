@@ -1,0 +1,9 @@
+[package]
+name = "zoo"
+version = "0.1.0"
+description = "A web service boilerplate using Rocket + Diesel + Juniper (GraphQL)"
+authors = ["azzamsa <me@azzamsa.com>"]
+edition = "2021"
+
+[dependencies]
+rocket = { version = "0.5.0-rc.1", default-features = false }
