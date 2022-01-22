@@ -1,4 +1,5 @@
 mod hello;
+pub mod logger;
 
 use rocket::{Build, Rocket};
 

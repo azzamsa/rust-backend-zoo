@@ -7,3 +7,9 @@ edition = "2021"
 
 [dependencies]
 rocket = { version = "0.5.0-rc.1", default-features = false }
+
+# log
+log = "0.4.14"
+fern = { version = "0.6.0", features = ["colored"] }
+chrono = "0.4.19"
+colored = "2.0.0"
