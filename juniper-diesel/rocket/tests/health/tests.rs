@@ -5,7 +5,7 @@ use super::graphql::queries::HealthQuery;
 use super::schema::Response;
 
 #[test]
-fn test_health() {
+fn health() {
     use rocket::local::blocking::Client;
 
     let client = Client::tracked(zoo::rocket()).unwrap();

@@ -5,7 +5,7 @@ use super::graphql::queries::MetaQuery;
 use super::schema::Response;
 
 #[test]
-fn test_meta() {
+fn meta() {
     use rocket::local::blocking::Client;
 
     let client = Client::tracked(zoo::rocket()).unwrap();
