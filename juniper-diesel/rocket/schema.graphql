@@ -1,0 +1,8 @@
+type Health {
+  status: String!
+}
+
+type Query {
+  health: Health!
+}
+
