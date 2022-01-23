@@ -31,3 +31,33 @@ pub mod queries {
         pub id: i32,
     }
 }
+
+#[cynic::schema_for_derives(file = "schema.graphql", module = "schema")]
+pub mod mutations {
+    use super::schema;
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Mutation", argument_struct = "CreateUserInput")]
+    pub struct UserMutation {
+        #[arguments(input =
+              CreateUserInput {
+                 name: args.name.clone(),
+                 full_name: args.full_name.clone(),
+            }
+        )]
+        pub create_user: User,
+    }
+
+    #[derive(cynic::InputObject, cynic::FragmentArguments, Debug)]
+    pub struct CreateUserInput {
+        pub name: String,
+        pub full_name: Option<String>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    pub struct User {
+        pub id: i32,
+        pub name: String,
+        pub full_name: Option<String>,
+    }
+}

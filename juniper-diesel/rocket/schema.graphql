@@ -1,3 +1,8 @@
+input CreateUserInput {
+  name: String!
+  fullName: String
+}
+
 type Health {
   status: String!
 }
@@ -5,6 +10,10 @@ type Health {
 type Meta {
   build: String!
   version: String!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User!
 }
 
 type Query {
