@@ -18,4 +18,16 @@ pub mod queries {
         pub name: String,
         pub full_name: Option<String>,
     }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Query", argument_struct = "ReadUserArguments")]
+    pub struct UserQuery {
+        #[arguments(id = &args.id)]
+        pub user: User,
+    }
+
+    #[derive(cynic::FragmentArguments, Debug)]
+    pub struct ReadUserArguments {
+        pub id: i32,
+    }
 }

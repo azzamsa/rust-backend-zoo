@@ -2044,4 +2044,5 @@ dependencies = [
  "log",
  "rocket",
  "serde",
+ "serde_json",
 ]

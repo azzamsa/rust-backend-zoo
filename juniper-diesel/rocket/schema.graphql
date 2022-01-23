@@ -11,6 +11,7 @@ type Query {
   health: Health!
   meta: Meta!
   users: [User!]!
+  user(id: Int!): User!
 }
 
 type User {

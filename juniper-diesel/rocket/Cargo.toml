@@ -26,3 +26,4 @@ colored = "2.0.0"
 
 [dev-dependencies]
 cynic = "1.0.0"
+serde_json = "1.0.75"
