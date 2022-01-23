@@ -10,5 +10,12 @@ type Meta {
 type Query {
   health: Health!
   meta: Meta!
+  users: [User!]!
+}
+
+type User {
+  id: Int!
+  name: String!
+  fullName: String
 }
 
