@@ -1871,5 +1871,6 @@ dependencies = [
  "juniper_rocket",
  "log",
  "rocket",
+ "serde",
  "serde_json",
 ]
