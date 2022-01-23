@@ -1,19 +1,8 @@
 use cynic::QueryBuilder;
 use rocket::http::{ContentType, Status};
-use serde::Deserialize;
-use zoo::meta::schema::Meta;
 
 use super::graphql::queries::MetaQuery;
-
-#[derive(Debug, Deserialize)]
-pub struct Response {
-    pub data: MetaWrapper,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct MetaWrapper {
-    pub meta: Meta,
-}
+use super::schema::Response;
 
 #[test]
 fn test_meta() {

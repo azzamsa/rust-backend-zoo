@@ -1,19 +1,8 @@
 use cynic::QueryBuilder;
 use rocket::http::{ContentType, Status};
-use serde::Deserialize;
-use zoo::health::schema::Health;
 
 use super::graphql::queries::HealthQuery;
-
-#[derive(Debug, Deserialize)]
-pub struct Response {
-    pub data: HealthWrapper,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct HealthWrapper {
-    pub health: Health,
-}
+use super::schema::Response;
 
 #[test]
 fn test_health() {

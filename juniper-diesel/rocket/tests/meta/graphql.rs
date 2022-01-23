@@ -4,6 +4,8 @@ mod schema {
 
 #[cynic::schema_for_derives(file = "schema.graphql", module = "schema")]
 pub mod queries {
+    use serde::Deserialize;
+
     use super::schema;
 
     #[derive(cynic::QueryFragment, Debug)]
@@ -12,7 +14,7 @@ pub mod queries {
         pub meta: Meta,
     }
 
-    #[derive(cynic::QueryFragment, Debug)]
+    #[derive(cynic::QueryFragment, Debug, Deserialize)]
     pub struct Meta {
         pub build: String,
         pub version: String,
