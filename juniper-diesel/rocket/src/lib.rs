@@ -1,6 +1,7 @@
 mod graphql;
 pub mod health; // `public` for integration test purpose
 pub mod logger;
+pub mod meta;
 mod routes;
 
 use juniper::{EmptyMutation, EmptySubscription};

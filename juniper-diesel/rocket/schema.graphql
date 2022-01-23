@@ -2,7 +2,13 @@ type Health {
   status: String!
 }
 
+type Meta {
+  build: String!
+  version: String!
+}
+
 type Query {
   health: Health!
+  meta: Meta!
 }
 
