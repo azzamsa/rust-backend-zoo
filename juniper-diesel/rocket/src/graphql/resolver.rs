@@ -21,4 +21,8 @@ impl Query {
         let pool = &ctx.pool;
         user::service::read_all(pool)
     }
+    pub fn user(ctx: &Context, id: i32) -> FieldResult<User> {
+        let pool = &ctx.pool;
+        user::service::read(pool, id)
+    }
 }
