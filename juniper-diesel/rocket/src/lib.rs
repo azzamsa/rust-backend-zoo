@@ -6,23 +6,29 @@ pub mod meta;
 mod routes;
 pub mod user;
 
+use std::env;
+
 #[macro_use]
 extern crate diesel;
 
+use anyhow::Context;
+use graphql::{Query, Schema};
 use juniper::{EmptyMutation, EmptySubscription};
 use rocket::{Build, Rocket};
 
-use graphql::{Context, Query, Schema};
+pub fn get_env(name: &str) -> anyhow::Result<String> {
+    env::var(&name).context(format!("`{}` is not set", &name))
+}
 
 #[must_use]
 pub fn rocket() -> Rocket<Build> {
-    let context = Context {
-        pool: db::get_pool(),
+    let context = graphql::Context {
+        pool: db::get_pool().expect("failed to get database pool"),
     };
     let schema = Schema::new(
         Query,
-        EmptyMutation::<Context>::new(),
-        EmptySubscription::<Context>::new(),
+        EmptyMutation::<graphql::Context>::new(),
+        EmptySubscription::<graphql::Context>::new(),
     );
     Rocket::build().manage(context).manage(schema).mount(
         "/",
