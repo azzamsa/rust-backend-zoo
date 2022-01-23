@@ -37,12 +37,32 @@ pub fn find(pool: &DbPool, id: i32) -> anyhow::Result<User> {
         }
     }
 }
+pub fn find_by_name(pool: &DbPool, name: &str) -> anyhow::Result<User> {
+    let user = user::table
+        .filter(user::name.eq(name))
+        .first::<User>(&pool.get()?)
+        .context("failed to perform a query to read users")?;
+
+    Ok(user)
+}
 
 pub fn create(pool: &DbPool, user_input: CreateUserInput) -> anyhow::Result<User> {
+    let error_message = "failed to perform a query to insert user";
+
+    let existing_user = find_by_name(pool, &user_input.name);
+    if existing_user.is_ok() {
+        bail!("a user with same `name` already exists")
+    }
+
     let user = diesel::insert_into(user::table)
         .values(user_input)
         .get_result::<User>(&pool.get()?)
-        .context("failed to perform a query to insert users")?;
+        // for logging purpose
+        .map_err(|err| {
+            log::error!("{}", format!("{error_message} `{:?}`", err));
+            err
+        })
+        .context("{error_message}")?;
 
     Ok(user)
 }
