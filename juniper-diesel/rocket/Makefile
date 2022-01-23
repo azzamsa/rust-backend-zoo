@@ -10,3 +10,10 @@ setup: ## Setup the repository
 update_gql_schema: ## Update the schema
 	# make store_schema app=juniper-diesel/rocket
 	get-graphql-schema http://127.0.0.1:8000/graphql > schema.graphql
+
+migrate_db:
+	diesel setup
+	diesel migration run
+
+reset_db:
+	diesel database reset

@@ -4,6 +4,8 @@ use crate::health;
 use crate::health::schema::Health;
 use crate::meta;
 use crate::meta::schema::Meta;
+use crate::user;
+use crate::user::schema::User;
 
 use super::{Context, Query};
 
@@ -14,5 +16,9 @@ impl Query {
     }
     pub fn meta(_ctx: &Context) -> FieldResult<Meta> {
         meta::service::read()
+    }
+    pub fn users(ctx: &Context) -> FieldResult<Vec<User>> {
+        let pool = &ctx.pool;
+        user::service::read_all(pool)
     }
 }

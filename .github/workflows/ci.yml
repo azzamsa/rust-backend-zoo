@@ -60,8 +60,26 @@ jobs:
       - name: Cache
         uses: Swatinem/rust-cache@v1
 
+      - name: Prepare the database
+        run: |
+          docker-compose -f ./tests/docker-compose.yml run -d -p 5432:5432 --name postgres_db postgres_db
+          docker exec postgres_db bash -c "until pg_isready; do sleep 1; done"
+
+      - name: Migrate the database juniper-diesel/rocket
+        working-directory: ./juniper-diesel/rocket
+        env:
+          DATABASE_URL: postgres://superuser:secret@localhost:5432/jdr
+        run: |
+          cargo install diesel_cli --no-default-features --features postgres
+
+          diesel setup
+          diesel migration run
+
       - name: Run tests for juniper-diesel/rocket
         uses: actions-rs/cargo@v1
+        env:
+          # jdr: juniper-diesel/rocket
+          DATABASE_URL: postgres://superuser:secret@localhost:5432/jdr
         with:
           command: test
           args: --locked --manifest-path juniper-diesel/rocket/Cargo.toml
