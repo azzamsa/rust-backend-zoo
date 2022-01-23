@@ -5,9 +5,9 @@ use crate::health::schema::Health;
 use crate::meta;
 use crate::meta::schema::Meta;
 use crate::user;
-use crate::user::schema::User;
+use crate::user::schema::{CreateUserInput, User};
 
-use super::{Context, Query};
+use super::{Context, Mutation, Query};
 
 #[juniper::graphql_object(Context = Context)]
 impl Query {
@@ -24,5 +24,13 @@ impl Query {
     pub fn user(ctx: &Context, id: i32) -> FieldResult<User> {
         let pool = &ctx.pool;
         user::service::read(pool, id)
+    }
+}
+
+#[juniper::graphql_object(Context = Context)]
+impl Mutation {
+    pub fn create_user(ctx: &Context, input: CreateUserInput) -> FieldResult<User> {
+        let pool = &ctx.pool;
+        user::service::create(pool, input)
     }
 }

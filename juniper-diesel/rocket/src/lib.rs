@@ -12,8 +12,8 @@ use std::env;
 extern crate diesel;
 
 use anyhow::Context;
-use graphql::{Query, Schema};
-use juniper::{EmptyMutation, EmptySubscription};
+use graphql::{Mutation, Query, Schema};
+use juniper::EmptySubscription;
 use rocket::{Build, Rocket};
 
 pub fn get_env(name: &str) -> anyhow::Result<String> {
@@ -27,7 +27,7 @@ pub fn rocket() -> Rocket<Build> {
     };
     let schema = Schema::new(
         Query,
-        EmptyMutation::<graphql::Context>::new(),
+        Mutation,
         EmptySubscription::<graphql::Context>::new(),
     );
     Rocket::build().manage(context).manage(schema).mount(
