@@ -68,11 +68,17 @@ pub async fn create(pool: &PgPool, user_input: CreateUserInput) -> anyhow::Resul
         bail!("a user with same `name` already exists")
     }
 
+    let full_name = if user_input.full_name.is_some() {
+        user_input.full_name
+    } else {
+        None
+    };
+
     let user = sqlx::query_as!(
         User,
         r#"insert into user_ (name, full_name) values ($1, $2) returning *"#,
         &user_input.name,
-        &user_input.full_name.unwrap(),
+        full_name
     )
     .fetch_one(pool)
     .await
