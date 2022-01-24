@@ -20,5 +20,7 @@ test:
 	cargo test --workspace --all-targets
 
 comply: fmt lint test ## Tasks to make the code-base comply with the rules. Mostly used in git hooks.
+	# source the .env before test
+	# source juniper-diesel/rocket/.env
 
 check: sort_check fmt_check lint test ## Check if the repository comply with the rules and ready to be pushed.
