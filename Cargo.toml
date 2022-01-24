@@ -16,4 +16,7 @@ members = [
 
   # async_graphql + diesel
   "async_graphql-diesel/rocket",
+
+  # async_graphql + sqlx
+  "async_graphql-sqlx/rocket",
 ]
