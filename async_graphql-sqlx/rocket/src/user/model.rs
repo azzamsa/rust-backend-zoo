@@ -4,7 +4,7 @@ use sqlx::PgPool;
 use super::schema::{CreateUserInput, UpdateUserInput, User};
 
 pub async fn find_all(pool: &PgPool) -> anyhow::Result<Vec<User>> {
-    let users = sqlx::query!(r#"select * from user_"#)
+    let users = sqlx::query_as!(User, r#"select * from user_"#)
         .fetch_all(pool)
         .await
         // for logging purpose
@@ -15,31 +15,17 @@ pub async fn find_all(pool: &PgPool) -> anyhow::Result<Vec<User>> {
             );
             err
         })
-        .context("failed to perform a query to read users")?
-        .into_iter()
-        .map(|row| User {
-            id: row.id,
-            name: row.name,
-            full_name: row.full_name,
-        })
-        .collect();
+        .context("failed to perform a query to read users")?;
 
     Ok(users)
 }
 pub async fn find(pool: &PgPool, id: i32) -> anyhow::Result<User> {
-    let row = sqlx::query!(r#"select * from user_ where id = $1"#, id)
+    let user = sqlx::query_as!(User, r#"select * from user_ where id = $1"#, id)
         .fetch_one(pool)
         .await;
 
-    match row {
-        Ok(row) => {
-            let user = User {
-                id: row.id,
-                name: row.name,
-                full_name: row.full_name,
-            };
-            Ok(user)
-        }
+    match user {
+        Ok(user) => Ok(user),
         Err(error) => {
             log::error!(
                 "{}",
@@ -55,19 +41,12 @@ pub async fn find(pool: &PgPool, id: i32) -> anyhow::Result<User> {
     }
 }
 pub async fn find_by_name(pool: &PgPool, name: &str) -> anyhow::Result<User> {
-    let row = sqlx::query!(r#"select * from user_ where name = $1"#, name)
+    let user = sqlx::query_as!(User, r#"select * from user_ where name = $1"#, name)
         .fetch_one(pool)
         .await;
 
-    match row {
-        Ok(row) => {
-            let user = User {
-                id: row.id,
-                name: row.name,
-                full_name: row.full_name,
-            };
-            Ok(user)
-        }
+    match user {
+        Ok(user) => Ok(user),
         Err(error) => {
             log::error!(
                 "{}",
@@ -89,18 +68,14 @@ pub async fn create(pool: &PgPool, user_input: CreateUserInput) -> anyhow::Resul
         bail!("a user with same `name` already exists")
     }
 
-    let user = sqlx::query!(
+    let user = sqlx::query_as!(
+        User,
         r#"insert into user_ (name, full_name) values ($1, $2) returning *"#,
         &user_input.name,
-        &user_input.full_name,
+        &user_input.full_name.unwrap(),
     )
     .fetch_one(pool)
     .await
-    .map(|row| User {
-        id: row.id,
-        name: row.name,
-        full_name: row.full_name,
-    })
     // for logging purpose
     .map_err(|err| {
         log::error!(
@@ -115,7 +90,8 @@ pub async fn create(pool: &PgPool, user_input: CreateUserInput) -> anyhow::Resul
 }
 
 pub async fn update(pool: &PgPool, user_input: UpdateUserInput) -> anyhow::Result<User> {
-    let row = sqlx::query!(
+    let user = sqlx::query_as!(
+        User,
         r#"update user_ set
               id = $1,
               name = $2,
@@ -128,15 +104,8 @@ pub async fn update(pool: &PgPool, user_input: UpdateUserInput) -> anyhow::Resul
     .fetch_one(pool)
     .await;
 
-    match row {
-        Ok(row) => {
-            let user = User {
-                id: row.id,
-                name: row.name,
-                full_name: row.full_name,
-            };
-            Ok(user)
-        }
+    match user {
+        Ok(user) => Ok(user),
         Err(error) => {
             log::error!(
                 "{}",
@@ -160,19 +129,12 @@ pub async fn delete(pool: &PgPool, id: i32) -> anyhow::Result<User> {
         bail!("no user with the specified id")
     }
 
-    let row = sqlx::query!(r#"delete from user_ where id = $1 returning *"#, id)
+    let user = sqlx::query_as!(User, r#"delete from user_ where id = $1 returning *"#, id)
         .fetch_one(pool)
         .await;
 
-    match row {
-        Ok(row) => {
-            let user = User {
-                id: row.id,
-                name: row.name,
-                full_name: row.full_name,
-            };
-            Ok(user)
-        }
+    match user {
+        Ok(user) => Ok(user),
         Err(error) => {
             log::error!("{}", format!("{} `{}`", error_message, error));
             match error {
