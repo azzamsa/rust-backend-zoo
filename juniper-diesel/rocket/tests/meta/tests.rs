@@ -1,14 +1,15 @@
+use anyhow::{Context, Result};
 use cynic::QueryBuilder;
 use rocket::http::{ContentType, Status};
 
 use super::graphql::queries::MetaQuery;
-use super::schema::Response;
+use super::schema::MetaResponse;
 
 #[test]
-fn meta() {
+fn meta() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(zoo::rocket()).unwrap();
+    let client = Client::tracked(zoo::rocket()).context("failed to create rocket test client")?;
     let query = MetaQuery::build(());
 
     let resp = client
@@ -19,7 +20,15 @@ fn meta() {
 
     assert_eq!(resp.status(), Status::Ok);
 
-    let response = resp.into_json::<Response>().unwrap();
+    let meta_response = resp
+        .into_json::<MetaResponse>()
+        .context("failed to deserialize response")
+        .map_err(|error| {
+            log::trace!("response has no value `{:?}`", error);
+            error
+        })?;
     let cargo_package_version = env!("CARGO_PKG_VERSION").to_string();
-    assert_eq!(response.data.meta.version, cargo_package_version);
+    assert_eq!(meta_response.data.meta.version, cargo_package_version);
+
+    Ok(())
 }

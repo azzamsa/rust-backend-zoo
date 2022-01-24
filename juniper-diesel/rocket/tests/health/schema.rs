@@ -3,7 +3,7 @@ use serde::Deserialize;
 use super::graphql::queries::Health;
 
 #[derive(Debug, Deserialize)]
-pub struct Response {
+pub struct HealthResponse {
     pub data: HealthWrapper,
 }
 
