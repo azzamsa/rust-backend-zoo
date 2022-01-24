@@ -2,15 +2,15 @@ use anyhow::{Context, Result};
 use cynic::QueryBuilder;
 use rocket::http::{ContentType, Status};
 
-use super::graphql::queries::HealthQuery;
-use super::schema::HealthResponse;
+use super::graphql::queries::MetaQuery;
+use super::schema::MetaResponse;
 
 #[test]
-fn health() -> Result<()> {
+fn meta() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
-    let query = HealthQuery::build(());
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
+    let query = MetaQuery::build(());
 
     let resp = client
         .post("/graphql")
@@ -20,14 +20,15 @@ fn health() -> Result<()> {
 
     assert_eq!(resp.status(), Status::Ok);
 
-    let health_response = resp
-        .into_json::<HealthResponse>()
+    let meta_response = resp
+        .into_json::<MetaResponse>()
         .context("failed to deserialize response")
         .map_err(|error| {
             log::trace!("response has no value `{:?}`", error);
             error
         })?;
-    assert_eq!(health_response.data.health.status, "running");
+    let cargo_package_version = env!("CARGO_PKG_VERSION").to_string();
+    assert_eq!(meta_response.data.meta.version, cargo_package_version);
 
     Ok(())
 }

@@ -9,7 +9,7 @@ use super::schema::MetaResponse;
 fn meta() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(zoo::rocket()).context("failed to create rocket test client")?;
+    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
     let query = MetaQuery::build(());
 
     let resp = client

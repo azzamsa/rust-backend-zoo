@@ -9,7 +9,7 @@ use super::schema::HealthResponse;
 fn health() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
     let query = HealthQuery::build(());
 
     let resp = client

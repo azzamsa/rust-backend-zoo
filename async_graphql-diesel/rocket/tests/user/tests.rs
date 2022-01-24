@@ -26,7 +26,7 @@ use super::schema::{CreateUserResponse, UpdateUserResponse};
 fn read_users() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
     let query = UsersQuery::build(());
 
     let resp = client
@@ -44,7 +44,7 @@ fn read_users() -> Result<()> {
 fn read_user() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
     let args = ReadUserArguments { id: 100 };
     let query = UserQuery::build(args);
 
@@ -71,7 +71,7 @@ fn read_user() -> Result<()> {
 fn create_user() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
     let args = add::CreateUserInput {
         name: "khawa-create".to_string(),
@@ -100,7 +100,7 @@ fn create_user() -> Result<()> {
 fn duplicate_username() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
     //
     // Create User
@@ -151,7 +151,7 @@ fn duplicate_username() -> Result<()> {
 fn update_user() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
     //
     // Create User
@@ -208,7 +208,7 @@ fn update_user() -> Result<()> {
 fn delete_user() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
     //
     // Create User

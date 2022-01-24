@@ -17,8 +17,13 @@ lint: ## Lint the codebase.
 	cargo clippy --workspace --locked --all-targets
 
 test:
-	cargo test --workspace --all-targets
-	# Clean up database after update
+	# Usage: make comply db_password=suntabana_99
+	# Clean up database after tests
+	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo --command "DELETE FROM user_;"
+	cargo test --all-targets --manifest-path juniper-diesel/rocket/Cargo.toml
+
+	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo --command "DELETE FROM user_;"
+	cargo test --all-targets --manifest-path async_graphql-diesel/rocket/Cargo.toml
 
 comply: fmt lint test ## Tasks to make the code-base comply with the rules. Mostly used in git hooks.
 	# source the .env before test

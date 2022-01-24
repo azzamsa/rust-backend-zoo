@@ -1,8 +1,8 @@
-use jdr::logger;
+use adr::logger;
 
 #[rocket::launch]
 fn rocket() -> _ {
     logger::init();
 
-    jdr::rocket()
+    adr::rocket()
 }
