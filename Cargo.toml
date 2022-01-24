@@ -8,7 +8,11 @@ members = [
   # juniper + diesel
   "juniper-diesel/rocket",
   "juniper-diesel/warp",
-  "juniper-diesel/actix",
+
+  # Always fails to compile zstd-sys
+  # https://github.com/gyscos/zstd-rs/issues/126
+  # https://github.com/gyscos/zstd-rs/issues/69
+  # "juniper-diesel/actix",
 
   # async_graphql + diesel
   "async_graphql-diesel/rocket",

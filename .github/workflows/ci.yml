@@ -114,23 +114,23 @@ jobs:
       # juniper-diesel/actix
       #
 
-      - name: Migrate the database juniper-diesel/actix
-        working-directory: ./juniper-diesel/actix
-        env:
-          DATABASE_URL: postgres://superuser:secret@localhost:5432/jda
-        run: |
-          cargo install diesel_cli --no-default-features --features postgres
+      # - name: Migrate the database juniper-diesel/actix
+      #   working-directory: ./juniper-diesel/actix
+      #   env:
+      #     DATABASE_URL: postgres://superuser:secret@localhost:5432/jda
+      #   run: |
+      #     cargo install diesel_cli --no-default-features --features postgres
 
-          diesel setup
-          diesel migration run
+      #     diesel setup
+      #     diesel migration run
 
-      - name: Run tests for juniper-diesel/actix
-        uses: actions-rs/cargo@v1
-        env:
-          DATABASE_URL: postgres://superuser:secret@localhost:5432/jda
-        with:
-          command: test
-          args: --locked --manifest-path juniper-diesel/actix/Cargo.toml
+      # - name: Run tests for juniper-diesel/actix
+      #   uses: actions-rs/cargo@v1
+      #   env:
+      #     DATABASE_URL: postgres://superuser:secret@localhost:5432/jda
+      #   with:
+      #     command: test
+      #     args: --locked --manifest-path juniper-diesel/actix/Cargo.toml
 
       #
       # async_graphql-diesel/rocket
