@@ -1,7 +1,7 @@
 [package]
 name = "jdw"
 version = "0.1.0"
-description = "A web service boilerplate using Warp + Diesel + Juniper (GraphQL)"
+description = "A web service boilerplate using Juniper (GraphQL) + Diesel + Warp"
 authors = ["azzamsa <me@azzamsa.com>"]
 edition = "2021"
 

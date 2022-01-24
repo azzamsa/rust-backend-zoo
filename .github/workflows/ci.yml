@@ -139,7 +139,7 @@ jobs:
       - name: Migrate the database async_graphql-diesel/rocket
         working-directory: ./async_graphql-diesel/rocket
         env:
-          DATABASE_URL: postgres://superuser:secret@localhost:5432/agr
+          DATABASE_URL: postgres://superuser:secret@localhost:5432/adr
         run: |
           cargo install diesel_cli --no-default-features --features postgres
 
@@ -149,7 +149,7 @@ jobs:
       - name: Run tests for async_graphql-diesel/rocket
         uses: actions-rs/cargo@v1
         env:
-          DATABASE_URL: postgres://superuser:secret@localhost:5432/agr
+          DATABASE_URL: postgres://superuser:secret@localhost:5432/adr
         with:
           command: test
           args: --locked --manifest-path async_graphql-diesel/rocket/Cargo.toml
