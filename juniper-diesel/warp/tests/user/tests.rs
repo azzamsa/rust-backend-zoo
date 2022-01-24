@@ -46,7 +46,7 @@ async fn read_user() -> Result<()> {
 
     assert_eq!(resp.status(), StatusCode::OK);
 
-    let body: Value = from_slice(resp.body()).context("failed to serialize response")?;
+    let body: Value = from_slice(resp.body()).context("failed to deserialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "user not found");
 
@@ -74,7 +74,7 @@ async fn create_user() -> Result<()> {
     assert_eq!(resp.status(), StatusCode::OK);
 
     let user_response: CreateUserResponse =
-        from_slice(resp.body()).context("failed to serialize response body")?;
+        from_slice(resp.body()).context("failed to deserialize response body")?;
 
     assert_eq!(user_response.data.create_user.name, "khawa-create");
 
@@ -122,7 +122,7 @@ async fn duplicate_username() -> Result<()> {
         .reply(&client)
         .await;
 
-    let body: Value = from_slice(resp.body()).context("failed to serialize response")?;
+    let body: Value = from_slice(resp.body()).context("failed to deserialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "a user with same `name` already exists");
 
@@ -154,7 +154,7 @@ async fn update_user() -> Result<()> {
     assert_eq!(resp.status(), StatusCode::OK);
 
     let user_response: CreateUserResponse =
-        from_slice(resp.body()).context("failed to serialize response body")?;
+        from_slice(resp.body()).context("failed to deserialize response body")?;
 
     assert_eq!(user_response.data.create_user.name, "khawa-update");
     let user_id = user_response.data.create_user.id;
@@ -178,7 +178,7 @@ async fn update_user() -> Result<()> {
         .await;
 
     let user_response: UpdateUserResponse =
-        from_slice(resp.body()).context("failed to serialize response body")?;
+        from_slice(resp.body()).context("failed to deserialize response body")?;
 
     assert_eq!(user_response.data.update_user.name, "haitham");
 
@@ -210,7 +210,7 @@ async fn delete_user() -> Result<()> {
     assert_eq!(resp.status(), StatusCode::OK);
 
     let user_response: CreateUserResponse =
-        from_slice(resp.body()).context("failed to serialize response body")?;
+        from_slice(resp.body()).context("failed to deserialize response body")?;
 
     assert_eq!(user_response.data.create_user.name, "khawa-delete");
     let user_id = user_response.data.create_user.id;
@@ -245,7 +245,7 @@ async fn delete_user() -> Result<()> {
 
     assert_eq!(resp.status(), StatusCode::OK);
 
-    let body: Value = from_slice(resp.body()).context("failed to serialize response")?;
+    let body: Value = from_slice(resp.body()).context("failed to deserialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "user not found");
 

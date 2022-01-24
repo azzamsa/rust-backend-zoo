@@ -60,7 +60,7 @@ fn read_user() -> Result<()> {
         .into_bytes()
         .context("failed to deserialize response")?;
 
-    let body: Value = from_slice(&resp_bytes).context("failed to serialize response")?;
+    let body: Value = from_slice(&resp_bytes).context("failed to deserialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "user not found");
 
@@ -140,7 +140,7 @@ fn duplicate_username() -> Result<()> {
         .into_bytes()
         .context("failed to deserialize response")?;
 
-    let body: Value = from_slice(&resp_bytes).context("failed to serialize response")?;
+    let body: Value = from_slice(&resp_bytes).context("failed to deserialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "a user with same `name` already exists");
 
@@ -267,7 +267,7 @@ fn delete_user() -> Result<()> {
         .into_bytes()
         .context("failed to deserialize response")?;
 
-    let body: Value = from_slice(&resp_bytes).context("failed to serialize response")?;
+    let body: Value = from_slice(&resp_bytes).context("failed to deserialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "user not found");
 

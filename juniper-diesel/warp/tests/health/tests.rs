@@ -24,7 +24,7 @@ async fn health() -> Result<()> {
     assert_eq!(resp.status(), StatusCode::OK);
 
     let health_response: HealthResponse =
-        from_slice(resp.body()).context("failed to serialize response body")?;
+        from_slice(resp.body()).context("failed to deserialize response body")?;
     assert_eq!(health_response.data.health.status, "running");
 
     Ok(())

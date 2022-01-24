@@ -24,7 +24,7 @@ async fn meta() -> Result<()> {
     assert_eq!(resp.status(), StatusCode::OK);
 
     let meta_response: MetaResponse =
-        from_slice(resp.body()).context("failed to serialize response body")?;
+        from_slice(resp.body()).context("failed to deserialize response body")?;
     let cargo_package_version = env!("CARGO_PKG_VERSION").to_string();
     assert_eq!(meta_response.data.meta.version, cargo_package_version);
 
