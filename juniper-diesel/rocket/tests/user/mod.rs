@@ -1,3 +1,3 @@
 mod graphql;
-mod schema;
+pub mod schema;
 mod tests;

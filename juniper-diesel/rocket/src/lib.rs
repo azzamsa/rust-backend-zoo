@@ -1,4 +1,5 @@
-mod db;
+// db module is public to allow reusability in integration test
+pub mod db;
 mod graphql;
 mod health;
 pub mod logger;
