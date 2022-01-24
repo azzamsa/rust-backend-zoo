@@ -94,6 +94,10 @@ fn duplicate_username() -> Result<()> {
 
     let client = Client::tracked(zoo::rocket()).unwrap();
 
+    //
+    // Create User
+    //
+
     let args = add::CreateUserInput {
         name: "khawa".to_string(),
         full_name: Some("Abu Musa Al-Khawarizmi".to_string()),
@@ -108,7 +112,10 @@ fn duplicate_username() -> Result<()> {
 
     assert_eq!(resp.status(), Status::Ok);
 
+    //
     // Create next user with the same name
+    //
+
     let args = add::CreateUserInput {
         name: "khawa".to_string(),
         full_name: None,
@@ -145,6 +152,10 @@ fn update_user() -> Result<()> {
 
     let client = Client::tracked(zoo::rocket()).context("failed to create rocket test client")?;
 
+    //
+    // Create User
+    //
+
     let args = add::CreateUserInput {
         name: "khawa".to_string(),
         full_name: Some("Abu Musa Al-Khawarizmi".to_string()),
@@ -170,7 +181,9 @@ fn update_user() -> Result<()> {
     assert_eq!(user_response.data.create_user.name, "khawa");
     let user_id = user_response.data.create_user.id;
 
+    //
     // Update User
+    //
 
     let args = update::UpdateUserInput {
         id: user_id,
