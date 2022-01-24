@@ -14,6 +14,7 @@ type Meta {
 
 type Mutation {
   createUser(input: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
 }
 
 type Query {
@@ -21,6 +22,17 @@ type Query {
   meta: Meta!
   users: [User!]!
   user(id: Int!): User!
+}
+
+input UpdateUserInput {
+  """The ID of the User to modify."""
+  id: Int!
+
+  """The name for the User."""
+  name: String!
+
+  """The full name for the User."""
+  fullName: String
 }
 
 type User {

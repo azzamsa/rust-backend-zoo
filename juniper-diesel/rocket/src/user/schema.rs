@@ -17,3 +17,14 @@ pub struct CreateUserInput {
     pub name: String,
     pub full_name: Option<String>,
 }
+
+#[derive(Debug, GraphQLInputObject, diesel::AsChangeset)]
+#[table_name = "user"]
+pub struct UpdateUserInput {
+    /// The ID of the User to modify.
+    pub id: i32,
+    /// The name for the User.
+    pub name: String,
+    /// The full name for the User.
+    pub full_name: Option<String>,
+}

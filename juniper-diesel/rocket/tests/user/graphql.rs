@@ -33,7 +33,7 @@ pub mod queries {
 }
 
 #[cynic::schema_for_derives(file = "schema.graphql", module = "schema")]
-pub mod mutations {
+pub mod add {
     use super::schema;
 
     #[derive(cynic::QueryFragment, Debug)]
@@ -50,6 +50,38 @@ pub mod mutations {
 
     #[derive(cynic::InputObject, cynic::FragmentArguments, Debug)]
     pub struct CreateUserInput {
+        pub name: String,
+        pub full_name: Option<String>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    pub struct User {
+        pub id: i32,
+        pub name: String,
+        pub full_name: Option<String>,
+    }
+}
+
+#[cynic::schema_for_derives(file = "schema.graphql", module = "schema")]
+pub mod update {
+    use super::schema;
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Mutation", argument_struct = "UpdateUserInput")]
+    pub struct UserMutation {
+        #[arguments(input =
+                    UpdateUserInput {
+                        id: args.id,
+                        name: args.name.clone(),
+                        full_name: args.full_name.clone(),
+            }
+        )]
+        pub update_user: User,
+    }
+
+    #[derive(cynic::InputObject, cynic::FragmentArguments, Debug)]
+    pub struct UpdateUserInput {
+        pub id: i32,
         pub name: String,
         pub full_name: Option<String>,
     }

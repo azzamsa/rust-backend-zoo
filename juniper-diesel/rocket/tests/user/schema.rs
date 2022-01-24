@@ -1,5 +1,9 @@
 use serde::Deserialize;
 
+//
+// Create User
+//
+
 #[derive(Debug, Deserialize)]
 pub struct CreateUserResponse {
     pub data: CreateUserWrapper,
@@ -9,6 +13,21 @@ pub struct CreateUserResponse {
 #[serde(rename_all(deserialize = "camelCase"))]
 pub struct CreateUserWrapper {
     pub create_user: User,
+}
+
+//
+// Update User
+//
+
+#[derive(Debug, Deserialize)]
+pub struct UpdateUserResponse {
+    pub data: UpdateUserWrapper,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct UpdateUserWrapper {
+    pub update_user: User,
 }
 
 #[derive(Debug, Deserialize)]

@@ -6,7 +6,7 @@ use crate::diesel::RunQueryDsl;
 
 use crate::db::DbPool;
 
-use super::schema::{CreateUserInput, User};
+use super::schema::{CreateUserInput, UpdateUserInput, User};
 use crate::db::schema::user_ as user;
 
 pub fn find_all(pool: &DbPool) -> anyhow::Result<Vec<User>> {
@@ -49,8 +49,8 @@ pub fn find_by_name(pool: &DbPool, name: &str) -> anyhow::Result<User> {
 pub fn create(pool: &DbPool, user_input: CreateUserInput) -> anyhow::Result<User> {
     let error_message = "failed to perform a query to insert user";
 
-    let existing_user = find_by_name(pool, &user_input.name);
-    if existing_user.is_ok() {
+    let is_user_exists = find_by_name(pool, &user_input.name);
+    if is_user_exists.is_ok() {
         bail!("a user with same `name` already exists")
     }
 
@@ -59,7 +59,28 @@ pub fn create(pool: &DbPool, user_input: CreateUserInput) -> anyhow::Result<User
         .get_result::<User>(&pool.get()?)
         // for logging purpose
         .map_err(|err| {
-            log::error!("{}", format!("{error_message} `{:?}`", err));
+            log::error!("{}", format!("{} `{:?}`", error_message, err));
+            err
+        })
+        .context("{error_message}")?;
+
+    Ok(user)
+}
+
+pub fn update(pool: &DbPool, user_input: UpdateUserInput) -> anyhow::Result<User> {
+    let error_message = "failed to perform a query to update user";
+
+    let is_user_exists = find(pool, user_input.id);
+    if is_user_exists.is_err() {
+        bail!("no user with the specified id")
+    }
+
+    let user = diesel::update(user::table)
+        .filter(user::id.eq(user_input.id))
+        .set(user_input)
+        .get_result::<User>(&pool.get()?)
+        .map_err(|err| {
+            log::error!("{}", format!("{} `{:?}`", error_message, err));
             err
         })
         .context("{error_message}")?;
