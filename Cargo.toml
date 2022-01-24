@@ -8,6 +8,7 @@ members = [
   # juniper + diesel
   "juniper-diesel/rocket",
   "juniper-diesel/warp",
+  "juniper-diesel/actix",
 
   # async_graphql + diesel
   "async_graphql-diesel/rocket",
