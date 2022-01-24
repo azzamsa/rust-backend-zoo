@@ -45,7 +45,15 @@ fn read_user() -> Result<()> {
 
     assert_eq!(resp.status(), Status::Ok);
 
-    let body: Value = from_slice(&resp.into_bytes().unwrap()).unwrap();
+    let resp_bytes = resp
+        .into_bytes()
+        .context("failed to deserialize response")
+        .map_err(|error| {
+            log::trace!("response has no value `{:?}`", error);
+            error
+        })?;
+
+    let body: Value = from_slice(&resp_bytes).context("failed to serialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "user not found");
 
@@ -92,7 +100,7 @@ fn create_user() -> Result<()> {
 fn duplicate_username() -> Result<()> {
     use rocket::local::blocking::Client;
 
-    let client = Client::tracked(zoo::rocket()).unwrap();
+    let client = Client::tracked(zoo::rocket()).context("failed to create rocket test client")?;
 
     //
     // Create User
@@ -277,7 +285,15 @@ fn delete_user() -> Result<()> {
 
     assert_eq!(resp.status(), Status::Ok);
 
-    let body: Value = from_slice(&resp.into_bytes().unwrap()).unwrap();
+    let resp_bytes = resp
+        .into_bytes()
+        .context("failed to deserialize response")
+        .map_err(|error| {
+            log::trace!("response has no value `{:?}`", error);
+            error
+        })?;
+
+    let body: Value = from_slice(&resp_bytes).context("failed to serialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "user not found");
 
