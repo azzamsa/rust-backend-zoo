@@ -1,14 +1,13 @@
 use anyhow::{Context, Result};
 use cynic::QueryBuilder;
 use rocket::http::{ContentType, Status};
+use rocket::local::blocking::Client;
 
 use super::graphql::queries::HealthQuery;
 use super::schema::HealthResponse;
 
 #[test]
 fn health() -> Result<()> {
-    use rocket::local::blocking::Client;
-
     let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
     let query = HealthQuery::build(());
 

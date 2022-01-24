@@ -13,6 +13,7 @@
 use anyhow::{Context, Result};
 use cynic::{MutationBuilder, QueryBuilder};
 use rocket::http::{ContentType, Status};
+use rocket::local::blocking::Client;
 use serde_json::{from_slice, Value};
 
 use super::graphql::add;
@@ -24,8 +25,6 @@ use super::schema::{CreateUserResponse, UpdateUserResponse};
 
 #[test]
 fn read_users() -> Result<()> {
-    use rocket::local::blocking::Client;
-
     let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
     let query = UsersQuery::build(());
 
@@ -42,8 +41,6 @@ fn read_users() -> Result<()> {
 
 #[test]
 fn read_user() -> Result<()> {
-    use rocket::local::blocking::Client;
-
     let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
     let args = ReadUserArguments { id: 100 };
     let query = UserQuery::build(args);
@@ -69,8 +66,6 @@ fn read_user() -> Result<()> {
 
 #[test]
 fn create_user() -> Result<()> {
-    use rocket::local::blocking::Client;
-
     let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
     let args = add::CreateUserInput {
@@ -98,8 +93,6 @@ fn create_user() -> Result<()> {
 
 #[test]
 fn duplicate_username() -> Result<()> {
-    use rocket::local::blocking::Client;
-
     let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
     //
@@ -149,8 +142,6 @@ fn duplicate_username() -> Result<()> {
 
 #[test]
 fn update_user() -> Result<()> {
-    use rocket::local::blocking::Client;
-
     let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
     //
@@ -206,8 +197,6 @@ fn update_user() -> Result<()> {
 
 #[test]
 fn delete_user() -> Result<()> {
-    use rocket::local::blocking::Client;
-
     let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
     //

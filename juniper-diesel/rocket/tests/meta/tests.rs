@@ -1,14 +1,13 @@
 use anyhow::{Context, Result};
 use cynic::QueryBuilder;
 use rocket::http::{ContentType, Status};
+use rocket::local::blocking::Client;
 
 use super::graphql::queries::MetaQuery;
 use super::schema::MetaResponse;
 
 #[test]
 fn meta() -> Result<()> {
-    use rocket::local::blocking::Client;
-
     let client = Client::tracked(jdr::rocket()).context("failed to create rocket test client")?;
     let query = MetaQuery::build(());
 
