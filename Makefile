@@ -18,6 +18,7 @@ lint: ## Lint the codebase.
 
 test:
 	cargo test --workspace --all-targets
+	# Clean up database after update
 
 comply: fmt lint test ## Tasks to make the code-base comply with the rules. Mostly used in git hooks.
 	# source the .env before test

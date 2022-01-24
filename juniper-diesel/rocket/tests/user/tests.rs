@@ -1,3 +1,15 @@
+// After some experiment, we avoid using the setup and tear-down method
+// of cleaning up the database after and before each test.
+//
+// Currently, Rust has no good support for something like Python `Conftest.py`.
+// We have to do some acrobats to do setup-and-teardown.
+//
+// Most of the time, the tests are failing, because the teardown is not executed if
+// the test function is panic.
+//
+// The best workaround we have currently is just to use different fixture for each test
+// function.
+
 use anyhow::{Context, Result};
 use cynic::{MutationBuilder, QueryBuilder};
 use rocket::http::{ContentType, Status};
@@ -9,7 +21,6 @@ use super::graphql::queries::{ReadUserArguments, UserQuery, UsersQuery};
 use super::graphql::update;
 
 use super::schema::{CreateUserResponse, UpdateUserResponse};
-use crate::utils::cleanup_db;
 
 #[test]
 fn read_users() -> Result<()> {
@@ -47,11 +58,7 @@ fn read_user() -> Result<()> {
 
     let resp_bytes = resp
         .into_bytes()
-        .context("failed to deserialize response")
-        .map_err(|error| {
-            log::trace!("response has no value `{:?}`", error);
-            error
-        })?;
+        .context("failed to deserialize response")?;
 
     let body: Value = from_slice(&resp_bytes).context("failed to serialize response")?;
     let error_message = &body["errors"][0]["message"];
@@ -67,7 +74,7 @@ fn create_user() -> Result<()> {
     let client = Client::tracked(zoo::rocket()).context("failed to create rocket test client")?;
 
     let args = add::CreateUserInput {
-        name: "khawa".to_string(),
+        name: "khawa-create".to_string(),
         full_name: Some("Abu Musa Al-Khawarizmi".to_string()),
     };
     let query = add::UserMutation::build(&args);
@@ -82,16 +89,9 @@ fn create_user() -> Result<()> {
 
     let user_response = resp
         .into_json::<CreateUserResponse>()
-        .context("failed to deserialize response")
-        .map_err(|error| {
-            log::trace!("response has no value `{:?}`", error);
-            error
-        })?;
+        .context("failed to deserialize response")?;
 
-    assert_eq!(user_response.data.create_user.name, "khawa");
-
-    // Tear down
-    cleanup_db();
+    assert_eq!(user_response.data.create_user.name, "khawa-create");
 
     Ok(())
 }
@@ -107,7 +107,7 @@ fn duplicate_username() -> Result<()> {
     //
 
     let args = add::CreateUserInput {
-        name: "khawa".to_string(),
+        name: "khawa-duplicate".to_string(),
         full_name: Some("Abu Musa Al-Khawarizmi".to_string()),
     };
     let query = add::UserMutation::build(&args);
@@ -125,7 +125,7 @@ fn duplicate_username() -> Result<()> {
     //
 
     let args = add::CreateUserInput {
-        name: "khawa".to_string(),
+        name: "khawa-duplicate".to_string(),
         full_name: None,
     };
     let query = add::UserMutation::build(&args);
@@ -138,18 +138,11 @@ fn duplicate_username() -> Result<()> {
 
     let resp_bytes = resp
         .into_bytes()
-        .context("failed to deserialize response")
-        .map_err(|error| {
-            log::trace!("response has no value `{:?}`", error);
-            error
-        })?;
+        .context("failed to deserialize response")?;
 
     let body: Value = from_slice(&resp_bytes).context("failed to serialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "a user with same `name` already exists");
-
-    // Tear down
-    cleanup_db();
 
     Ok(())
 }
@@ -165,7 +158,7 @@ fn update_user() -> Result<()> {
     //
 
     let args = add::CreateUserInput {
-        name: "khawa".to_string(),
+        name: "khawa-update".to_string(),
         full_name: Some("Abu Musa Al-Khawarizmi".to_string()),
     };
     let query = add::UserMutation::build(&args);
@@ -180,13 +173,9 @@ fn update_user() -> Result<()> {
 
     let user_response = resp
         .into_json::<CreateUserResponse>()
-        .context("failed to deserialize response")
-        .map_err(|error| {
-            log::trace!("response has no value `{:?}`", error);
-            error
-        })?;
+        .context("failed to deserialize response")?;
 
-    assert_eq!(user_response.data.create_user.name, "khawa");
+    assert_eq!(user_response.data.create_user.name, "khawa-update");
     let user_id = user_response.data.create_user.id;
 
     //
@@ -208,16 +197,9 @@ fn update_user() -> Result<()> {
 
     let user_response = resp
         .into_json::<UpdateUserResponse>()
-        .context("failed to deserialize response")
-        .map_err(|error| {
-            log::trace!("response has no value `{:?}`", error);
-            error
-        })?;
+        .context("failed to deserialize response")?;
 
     assert_eq!(user_response.data.update_user.name, "haitham");
-
-    // Tear down
-    cleanup_db();
 
     Ok(())
 }
@@ -233,7 +215,7 @@ fn delete_user() -> Result<()> {
     //
 
     let args = add::CreateUserInput {
-        name: "khawa".to_string(),
+        name: "khawa-delete".to_string(),
         full_name: Some("Abu Musa Al-Khawarizmi".to_string()),
     };
     let query = add::UserMutation::build(&args);
@@ -248,13 +230,9 @@ fn delete_user() -> Result<()> {
 
     let user_response = resp
         .into_json::<CreateUserResponse>()
-        .context("failed to deserialize response")
-        .map_err(|error| {
-            log::trace!("response has no value `{:?}`", error);
-            error
-        })?;
+        .context("failed to deserialize response")?;
 
-    assert_eq!(user_response.data.create_user.name, "khawa");
+    assert_eq!(user_response.data.create_user.name, "khawa-delete");
     let user_id = user_response.data.create_user.id;
 
     //
@@ -287,18 +265,11 @@ fn delete_user() -> Result<()> {
 
     let resp_bytes = resp
         .into_bytes()
-        .context("failed to deserialize response")
-        .map_err(|error| {
-            log::trace!("response has no value `{:?}`", error);
-            error
-        })?;
+        .context("failed to deserialize response")?;
 
     let body: Value = from_slice(&resp_bytes).context("failed to serialize response")?;
     let error_message = &body["errors"][0]["message"];
     assert_eq!(error_message, "user not found");
-
-    // Tear down
-    cleanup_db();
 
     Ok(())
 }
