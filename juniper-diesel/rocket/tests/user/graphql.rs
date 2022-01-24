@@ -93,3 +93,27 @@ pub mod update {
         pub full_name: Option<String>,
     }
 }
+
+#[cynic::schema_for_derives(file = "schema.graphql", module = "schema")]
+pub mod delete {
+    use super::schema;
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Mutation", argument_struct = "DeleteUserArguments")]
+    pub struct UserMutation {
+        #[arguments(id = &args.id)]
+        pub delete_user: User,
+    }
+
+    #[derive(cynic::FragmentArguments, Debug)]
+    pub struct DeleteUserArguments {
+        pub id: i32,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    pub struct User {
+        pub id: i32,
+        pub name: String,
+        pub full_name: Option<String>,
+    }
+}

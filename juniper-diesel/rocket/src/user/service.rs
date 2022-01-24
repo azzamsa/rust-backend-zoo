@@ -20,3 +20,7 @@ pub fn update(pool: &DbPool, user_input: UpdateUserInput) -> FieldResult<User> {
     let user = model::update(pool, user_input)?;
     Ok(user)
 }
+pub fn delete(pool: &DbPool, id: i32) -> FieldResult<User> {
+    let user = model::delete(pool, id)?;
+    Ok(user)
+}

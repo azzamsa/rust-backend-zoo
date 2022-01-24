@@ -15,6 +15,7 @@ type Meta {
 type Mutation {
   createUser(input: CreateUserInput!): User!
   updateUser(input: UpdateUserInput!): User!
+  deleteUser(id: Int!): User!
 }
 
 type Query {

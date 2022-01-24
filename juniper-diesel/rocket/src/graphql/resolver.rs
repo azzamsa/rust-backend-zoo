@@ -37,4 +37,8 @@ impl Mutation {
         let pool = &ctx.pool;
         user::service::update(pool, input)
     }
+    pub fn delete_user(ctx: &Context, id: i32) -> FieldResult<User> {
+        let pool = &ctx.pool;
+        user::service::delete(pool, id)
+    }
 }

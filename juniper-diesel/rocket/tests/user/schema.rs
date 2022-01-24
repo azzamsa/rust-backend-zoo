@@ -30,6 +30,25 @@ pub struct UpdateUserWrapper {
     pub update_user: User,
 }
 
+//
+// Update User
+//
+
+#[derive(Debug, Deserialize)]
+pub struct DeleteUserResponse {
+    pub data: DeleteUserWrapper,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(rename_all(deserialize = "camelCase"))]
+pub struct DeleteUserWrapper {
+    pub delte_user: User,
+}
+
+//
+// Shared struct
+//
+
 #[derive(Debug, Deserialize)]
 #[serde(rename_all(deserialize = "camelCase"))]
 // To match GraphQL response field camelCase,

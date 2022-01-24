@@ -87,3 +87,23 @@ pub fn update(pool: &DbPool, user_input: UpdateUserInput) -> anyhow::Result<User
 
     Ok(user)
 }
+
+pub fn delete(pool: &DbPool, id: i32) -> anyhow::Result<User> {
+    let error_message = "failed to perform a query to delete user";
+
+    let is_user_exists = find(pool, id);
+    if is_user_exists.is_err() {
+        bail!("no user with the specified id")
+    }
+
+    let user = diesel::delete(user::table)
+        .filter(user::id.eq(id))
+        .get_result::<User>(&pool.get()?)
+        .map_err(|err| {
+            log::error!("{}", format!("{} `{:?}`", error_message, err));
+            err
+        })
+        .context("{error_message}")?;
+
+    Ok(user)
+}
