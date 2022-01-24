@@ -8,7 +8,7 @@ setup: ## Setup the repository
 	npm install -g get-graphql-schema
 
 update_gql_schema: ## Update the schema
-	# make store_schema app=juniper-diesel/rocket
+	# Run the app before running this command
 	get-graphql-schema http://127.0.0.1:8000/graphql > schema.graphql
 
 migrate_db:
