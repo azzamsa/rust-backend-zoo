@@ -5,6 +5,10 @@ codegen-units = 1
 
 [workspace]
 members = [
+  # juniper + diesel
   "juniper-diesel/rocket",
+  "juniper-diesel/warp",
+
+  # async_graphql + diesel
   "async_graphql-diesel/rocket",
 ]

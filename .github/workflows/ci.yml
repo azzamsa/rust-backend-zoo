@@ -97,8 +97,25 @@ jobs:
       - name: Run tests for async_graphql-diesel/rocket
         uses: actions-rs/cargo@v1
         env:
-          # jdr: juniper-diesel/rocket
           DATABASE_URL: postgres://superuser:secret@localhost:5432/agr
+        with:
+          command: test
+          args: --locked --manifest-path async_graphql-diesel/rocket/Cargo.toml
+
+      - name: Migrate the database juniper-diesel/warp
+        working-directory: ./juniper-diesel/warp
+        env:
+          DATABASE_URL: postgres://superuser:secret@localhost:5432/jdw
+        run: |
+          cargo install diesel_cli --no-default-features --features postgres
+
+          diesel setup
+          diesel migration run
+
+      - name: Run tests for juniper-diesel/warp
+        uses: actions-rs/cargo@v1
+        env:
+          DATABASE_URL: postgres://superuser:secret@localhost:5432/jdw
         with:
           command: test
           args: --locked --manifest-path async_graphql-diesel/rocket/Cargo.toml

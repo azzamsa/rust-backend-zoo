@@ -1,0 +1,32 @@
+[package]
+name = "jdw"
+version = "0.1.0"
+description = "A web service boilerplate using Warp + Diesel + Juniper (GraphQL)"
+authors = ["azzamsa <me@azzamsa.com>"]
+edition = "2021"
+
+[dependencies]
+warp = "0.2.3"
+tokio = { version = "0.2.21", features = ["full"] }
+
+dotenv = "0.15.0"
+
+# GraphQL
+juniper = { version = "0.15.7" }
+juniper_warp = "0.6.0"
+
+anyhow = "1.0.52"
+
+# Database
+diesel = { version = "1.4.5", features=["postgres", "r2d2"] }
+
+# log
+log = "0.4.14"
+fern = { version = "0.6.0", features = ["colored"] }
+chrono = "0.4.19"
+colored = "2.0.0"
+
+[dev-dependencies]
+serde = { version = "1.0", features = ["derive"] }
+cynic = "1.0.0"
+serde_json = "1.0.75"

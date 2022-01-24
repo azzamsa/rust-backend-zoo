@@ -25,6 +25,9 @@ test:
 	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo --command "DELETE FROM user_;"
 	cargo test --all-targets --manifest-path async_graphql-diesel/rocket/Cargo.toml
 
+	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo --command "DELETE FROM user_;"
+
+
 comply: fmt lint test ## Tasks to make the code-base comply with the rules. Mostly used in git hooks.
 	# source the .env before test
 	# source juniper-diesel/rocket/.env
