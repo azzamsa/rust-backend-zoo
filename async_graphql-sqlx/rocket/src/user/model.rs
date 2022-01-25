@@ -96,12 +96,13 @@ pub async fn create(pool: &PgPool, user_input: CreateUserInput) -> anyhow::Resul
 }
 
 pub async fn update(pool: &PgPool, user_input: UpdateUserInput) -> anyhow::Result<User> {
+    // `COALESCE` takes existing value if the input in None/Null.
     let user = sqlx::query_as!(
         User,
         r#"update user_ set
               id = $1,
               name = $2,
-              full_name = $3
+              full_name = COALESCE($3, full_name)
            where id = $1 returning *"#,
         user_input.id,
         user_input.name,
