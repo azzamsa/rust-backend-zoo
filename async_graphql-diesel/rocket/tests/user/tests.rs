@@ -141,6 +141,37 @@ fn duplicate_username() -> Result<()> {
 }
 
 #[test]
+fn create_user_without_full_name() -> Result<()> {
+    let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
+
+    let args = add::CreateUserInput {
+        name: "khawa-create-no-full-name".to_string(),
+        full_name: None,
+    };
+    let query = add::UserMutation::build(&args);
+
+    let resp = client
+        .post("/graphql")
+        .header(ContentType::JSON)
+        .json(&query)
+        .dispatch();
+
+    assert_eq!(resp.status(), Status::Ok);
+
+    let user_response = resp
+        .into_json::<CreateUserResponse>()
+        .context("failed to deserialize response")?;
+
+    assert_eq!(
+        user_response.data.create_user.name,
+        "khawa-create-no-full-name"
+    );
+    assert_eq!(user_response.data.create_user.full_name, None);
+
+    Ok(())
+}
+
+#[test]
 fn update_user() -> Result<()> {
     let client = Client::tracked(adr::rocket()).context("failed to create rocket test client")?;
 
