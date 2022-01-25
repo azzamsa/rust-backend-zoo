@@ -11,6 +11,12 @@ update_gql_schema: ## Update the schema
 	# Run the app before running this command
 	get-graphql-schema http://127.0.0.1:8000/graphql > schema.graphql
 
+update_sqlx_schema:
+	cargo sqlx prepare -- --lib
+
+check_sqlx_schema:
+	cargo sqlx prepare --check -- --lib
+
 migrate_db:
 	sqlx database create
 	sqlx migrate run
@@ -33,7 +39,7 @@ test:
 
 	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo-sqlx --command "DELETE FROM user_;"
 
-comply: fmt lint test ## Tasks to make the code-base comply with the rules. Mostly used in git hooks.
+comply: update_sqlx_schema fmt lint test  ## Tasks to make the code-base comply with the rules. Mostly used in git hooks.
 	# usage: make comply db_password=secret
 
-check: sort_check fmt_check lint test ## Check if the repository comply with the rules and ready to be pushed.
+check: check_sqlx_schema sort_check fmt_check lint test ## Check if the repository comply with the rules and ready to be pushed.

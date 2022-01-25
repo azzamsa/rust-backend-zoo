@@ -159,8 +159,8 @@
       ]
     }
   },
-  "f07a7b76fd619fe955145e71a9ad4e2b57a2e32b70027989198c85ebc8b08bf7": {
-    "query": "update user_ set id = $1 where id = $1 returning *",
+  "c92dae8a7eebdcba6d1b369a197c115166b4b7e1a83178dee8892d74a74133c0": {
+    "query": "update user_ set\n              id = $1,\n              name = $2,\n              full_name = COALESCE($3, full_name)\n           where id = $1 returning *",
     "describe": {
       "columns": [
         {
@@ -181,7 +181,9 @@
       ],
       "parameters": {
         "Left": [
-          "Int4"
+          "Int4",
+          "Text",
+          "Text"
         ]
       },
       "nullable": [
