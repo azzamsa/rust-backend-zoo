@@ -96,6 +96,11 @@ pub async fn create(pool: &PgPool, user_input: CreateUserInput) -> anyhow::Resul
 }
 
 pub async fn update(pool: &PgPool, user_input: UpdateUserInput) -> anyhow::Result<User> {
+    let existing_user = find_by_name(pool, &user_input.name).await;
+    if existing_user.is_ok() {
+        bail!("a user with same `name` already exists")
+    }
+
     // `COALESCE` takes existing value if the input in None/Null.
     let user = sqlx::query_as!(
         User,
