@@ -262,3 +262,66 @@ fn delete_user() -> Result<()> {
 
     Ok(())
 }
+
+#[test]
+fn keep_existing_full_name() -> Result<()> {
+    let client = Client::tracked(asr::rocket()).context("failed to create rocket test client")?;
+
+    //
+    // Create User
+    //
+
+    let args = add::CreateUserInput {
+        name: "khawa-keep".to_string(),
+        full_name: Some("Abu Musa Al-Khawarizmi".to_string()),
+    };
+    let query = add::UserMutation::build(&args);
+
+    let resp = client
+        .post("/graphql")
+        .header(ContentType::JSON)
+        .json(&query)
+        .dispatch();
+
+    assert_eq!(resp.status(), Status::Ok);
+
+    let user_response = resp
+        .into_json::<CreateUserResponse>()
+        .context("failed to deserialize response")?;
+
+    assert_eq!(user_response.data.create_user.name, "khawa-keep");
+    let user_id = user_response.data.create_user.id;
+
+    //
+    // Update Only the user name
+    //
+
+    let args = update::UpdateUserInput {
+        id: user_id,
+        name: "khawa-keep-2".to_string(),
+        full_name: None,
+    };
+    let query = update::UserMutation::build(&args);
+
+    let resp = client
+        .post("/graphql")
+        .header(ContentType::JSON)
+        .json(&query)
+        .dispatch();
+
+    //
+    // Make sure the full name preserved
+    //
+
+    let user_response = resp
+        .into_json::<UpdateUserResponse>()
+        .context("failed to deserialize response")?;
+
+    assert_eq!(user_response.data.update_user.name, "khawa-keep-2");
+    assert_eq!(
+        user_response.data.update_user.full_name,
+        Some("Abu Musa Al-Khawarizmi".to_string())
+    );
+
+    Ok(())
+}
