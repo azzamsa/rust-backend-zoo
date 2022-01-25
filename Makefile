@@ -18,18 +18,26 @@ lint: ## Lint the codebase.
 
 test:
 	# Usage: make comply db_password=suntabana_99
-	# Clean up database after tests
+	# Make sure the database exists before running this command
+	# It is intended only for local workflows. Otherwise, see `.github/workflows/ci.yml`
+
+	# Setup database
+	# cd juniper-diesel/rocket && source .env &&  diesel setup && diesel migration run
+	# cd async_graphql-sqlx/rocket && source .env &&  sqlx database create && sqlx migrate run
+
+	# Clean up database before tests
 	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo --command "DELETE FROM user_;"
-	cargo test --all-targets --manifest-path juniper-diesel/rocket/Cargo.toml
+	# . is alias to `source`. Using `source` doesn't work, as it runs by sh not bash
+	. juniper-diesel/rocket/.env  && cargo test --all-targets --manifest-path juniper-diesel/rocket/Cargo.toml
 
 	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo --command "DELETE FROM user_;"
-	cargo test --all-targets --manifest-path juniper-diesel/warp/Cargo.toml
+	. juniper-diesel/warp/.env && cargo test --all-targets --manifest-path juniper-diesel/warp/Cargo.toml
 
 	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo --command "DELETE FROM user_;"
-	cargo test --all-targets --manifest-path async_graphql-diesel/rocket/Cargo.toml
+	. async_graphql-diesel/rocket/.env && cargo test --all-targets --manifest-path async_graphql-diesel/rocket/Cargo.toml
 
 	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo-sqlx --command "DELETE FROM user_;"
-	cargo test --all-targets --manifest-path async_graphql-sqlx/rocket/Cargo.toml
+	. async_graphql-sqlx/rocket/.env && cargo test --all-targets --manifest-path async_graphql-sqlx/rocket/Cargo.toml
 
 	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo --command "DELETE FROM user_;"
 	env PGPASSWORD=$(db_password) psql --host localhost --username postgres zoo-sqlx --command "DELETE FROM user_;"
